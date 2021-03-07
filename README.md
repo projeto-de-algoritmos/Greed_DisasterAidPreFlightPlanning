@@ -1,45 +1,33 @@
-**!! Atenção: Renomeie o seu repositório para (Tema)_(NomeDoProjeto). !!** 
+# Landing Zone Detection
+Determine which of the reachable detected landing zones is closest to the human.
 
-Temas:
- - Grafos1
- - Grafos2
- - PD
- - D&C
- - Greed
- - Final 
- 
- **!! *Não coloque os nomes dos alunos no título do repositório*. Exemplo de título correto: Grafos2_Labirinto-do-Minotauro !!**
- 
- (Apague essa seção)
+**List Number**: X<br>
+**Discipline Subject**: Graphs II<br>
 
-# NomedoProjeto
-
-**Número da Lista**: X<br>
-**Conteúdo da Disciplina**: XXXXXXXXXX<br>
-
-## Alunos
-|Matrícula | Aluno |
+## Students
+|Number | Student |
 | -- | -- |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
-| xx/xxxxxx  |  xxxx xxxx xxxxx |
+| 17/0146251  |  João Lucas Zarbiélli |
+| 19/0046945  |  Leonardo Michalski Miranda |
 
-## Sobre 
-Descreva os objetivos do seu projeto e como ele funciona. 
-
-## Screenshots
-Adicione 3 ou mais screenshots do projeto em funcionamento.
-
-## Instalação 
-**Linguagem**: xxxxxx<br>
-**Framework**: (caso exista)<br>
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
-
-## Uso 
-Explique como usar seu projeto caso haja algum passo a passo após o comando de execução.
-
-## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
+## About
 
 
+## App Gif
+![App Gif](assets/app_gif.gif)
 
+## Video (pt-br, [download link](https://raw.githubusercontent.com/projeto-de-algoritmos/Grafos2_LandingZoneDetection/main/assets/app_video.mp4))
+[![](assets/app_video_splash_screen.png)]()
 
+## How to run
+**Language**: Python.<br>
+**Frameworks**: OpenCV; Jupyter Voilà; BinderHub.<br>
+Access the [app](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_LandingZoneDetection/main?urlpath=%2Fvoila%2Frender%2Fapp.ipynb) or the [notebook](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_LandingZoneDetection/main?filepath=app.ipynb) with the BinderHub server.
+
+## How to use
+
+## References
+
+Jupyter et al., "Binder 2.0 - Reproducible, Interactive, Sharable
+Environments for Science at Scale." Proceedings of the 17th Python
+in Science Conference. 2018. doi://10.25080/Majora-4af1f417-011
