@@ -15,19 +15,24 @@ class AerialImageData(object):
         Description of parameter `adj_matrix`.
     height_map : type
         Description of parameter `height_map`.
+    person_coord : type
+        Description of parameter `person_coord`.
 
     Attributes
     ----------
     frame
     adj_matrix
     height_map
+    person_coord
 
     """
 
-    def __init__(self, frame=None, adj_matrix=None, height_map=None):
+    def __init__(self, frame=None, adj_matrix=None, height_map=None,
+                 person_coord=None):
         self.frame = frame
         self.adj_matrix = adj_matrix
         self.height_map = height_map
+        self.person_coord = person_coord
 
 
 # UTILITIES TO GENERATE RANDOM DATA
@@ -304,4 +309,6 @@ class RandomAerialImageDataGenerator(object):
         data.frame[x1:x2, y1:y2, :] = self.person_options_images[
             chosen_item_idx
         ]
+        # store the coordinate of the person
+        data.person_coord = [i, j]
         return data
