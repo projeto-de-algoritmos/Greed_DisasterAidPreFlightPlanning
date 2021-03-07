@@ -53,43 +53,43 @@ PERSON_OPTIONS_IMAGES = [
 ]
 
 TERRAIN_OPTIONS_LABELS = [
-    labels.UAV_CAN_LAND_HUMAN_CAN_REACH,  # grass
-    labels.UAV_CAN_LAND_HUMAN_CAN_REACH,  # grass_barrel
-    labels.UAV_CAN_LAND_HUMAN_CAN_REACH,  # grass_pincushion
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # tall_grass
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # tall_grass_barrel
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # tall_grass_pincushion
-    labels.UAV_CANNOT_LAND_HUMAN_CANNOT_REACH,  # tree
-    labels.UAV_CANNOT_LAND_HUMAN_CANNOT_REACH,  # tree_barrel
-    labels.UAV_CANNOT_LAND_HUMAN_CANNOT_REACH,  # tree_pincushion
+    labels.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass
+    labels.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass_barrel
+    labels.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass_pincushion
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass_barrel
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass_pincushion
+    labels.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree
+    labels.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree_barrel
+    labels.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree_pincushion
 ]
 PERSON_OPTIONS_LABELS = [
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # person_in_tall_grass
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # person_in_tall_grass_barrel
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # person_in_tall_grass_pincushion
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # person_on_grass
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # person_on_grass_barrel
-    labels.UAV_CANNOT_LAND_HUMAN_CAN_REACH,  # person_on_grass_pincushion
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass_barrel
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass_pincushion
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_barrel
+    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_pincushion
 ]
 
 TERRAIN_OPTIONS_HEIGHTS = [
     0,  # grass
-    1,  # grass_barrel
-    -1,  # grass_pincushion
+    0.8,  # grass_barrel
+    -1.2,  # grass_pincushion
     0,  # tall_grass
-    1,  # tall_grass_barrel
-    -1,  # tall_grass_pincushion
+    0.8,  # tall_grass_barrel
+    -1.2,  # tall_grass_pincushion
     0,  # tree
-    1,  # tree_barrel
-    -1,  # tree_pincushion
+    0.8,  # tree_barrel
+    -1.2,  # tree_pincushion
 ]
 PERSON_OPTIONS_HEIGHTS = [
     0,  # person_in_tall_grass
-    1,  # person_in_tall_grass_barrel
-    -1,  # person_in_tall_grass_pincushion
+    0.8,  # person_in_tall_grass_barrel
+    -1.2,  # person_in_tall_grass_pincushion
     0,  # person_on_grass
-    1,  # person_on_grass_barrel
-    -1,  # person_on_grass_pincushion
+    0.8,  # person_on_grass_barrel
+    -1.2,  # person_on_grass_pincushion
 ]
 
 

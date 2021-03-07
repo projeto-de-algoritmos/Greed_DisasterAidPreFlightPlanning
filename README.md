@@ -1,5 +1,5 @@
 # Landing Zone Detection
-Determine which of the reachable detected landing zones is closest to the human.
+Determine which of the reachable detected landing zones is closest to the person.
 
 **List Number**: X<br>
 **Discipline Subject**: Graphs II<br>
