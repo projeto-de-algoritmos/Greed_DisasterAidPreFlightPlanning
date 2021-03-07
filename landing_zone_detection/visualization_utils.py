@@ -29,9 +29,9 @@ def item_from_color(color, col_size=32, row_size=32):
 
 
 def adj_matrix_to_image(adj_matrix,
-                        value_to_color={1: [0, 0, 0],  # nothing
-                                        0: [122, 160, 255],  # tomato
-                                        -1: [0, 0, 255]},  # red
+                        value_to_color={1: [80, 30, 50],
+                                        0: [168, 50, 125],
+                                        -1: [0, 0, 255]},
                         num_channels=3,
                         num_cols=7, num_rows=7,
                         col_size=32, row_size=32,
