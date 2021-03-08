@@ -12,3 +12,4 @@ RUN pip install --default-timeout=15000 --requirement /tmp/requirements.txt && \
 
 COPY landing_zone_detection landing_zone_detection
 COPY app.ipynb .
+COPY mock_data mock_data
