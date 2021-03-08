@@ -18,13 +18,6 @@ class AerialImageData(object):
     person_coord : type
         Description of parameter `person_coord`.
 
-    Attributes
-    ----------
-    frame
-    adj_matrix
-    height_map
-    person_coord
-
     """
 
     def __init__(self, frame=None, adj_matrix=None, height_map=None,
@@ -136,18 +129,6 @@ class RandomAerialImageDataGenerator(object):
         Description of attribute `num_rows`.
     load_img_items : type
         Description of attribute `load_img_items`.
-    width
-    height
-    channels
-    dtype
-    col_size
-    row_size
-    terrain_options_images
-    terrain_options_labels
-    terrain_options_heights
-    person_options_images
-    person_options_labels
-    person_options_heights
 
     """
 
@@ -223,9 +204,9 @@ class RandomAerialImageDataGenerator(object):
 
         """
         return cv2.resize(
-            img_item,
-            (self.col_size, self.row_size),
-            resize_method,
+            src=img_item,
+            dsize=(self.col_size, self.row_size),
+            interpolation=resize_method,
             **kwargs
         )
 
