@@ -152,8 +152,8 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
         nb_height = data.height_map[nb_coord[0]][nb_coord[1]]
         nb_distance = current_item['distance'] + \
             distance_between_3d_points(
-                *current_coord, abs(current_height),
-                *nb_coord, abs(nb_height)
+                current_coord[0], current_coord[1], abs(current_height),
+                nb_coord[0], nb_coord[1], abs(nb_height)
             )
 
         if nb_coord_hashable not in shortest_paths_dict:
@@ -164,10 +164,8 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
         nb_coord_item = shortest_paths_dict[nb_coord_hashable]
 
         nb_coord_item['distance'] = nb_distance
-        nb_coord_item['path'] = [
-            *shortest_paths_dict[current_coord_hash]['path'],
-            nb_coord
-        ]
+        nb_coord_item['path'] = shortest_paths_dict[current_coord_hash]['path'][:]
+        nb_coord_item['path'].append(nb_coord)
         if can_uav_land(nb_label):
             nb_coord_item['can_uav_land'] = True
         else:
