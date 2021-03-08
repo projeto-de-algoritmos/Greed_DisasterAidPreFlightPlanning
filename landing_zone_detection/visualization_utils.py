@@ -8,17 +8,17 @@ def item_from_color(color, col_size=32, row_size=32):
 
     Parameters
     ----------
-    color : type
-        Description of parameter `color`.
-    col_size : type
-        Description of parameter `col_size`.
-    row_size : type
-        Description of parameter `row_size`.
+    color : List, default=Required
+        List with 3 int that describe rgb color.
+    col_size : Int, default=32
+        Color size.
+    row_size : Int, default=32
+        Size of a row.
 
     Returns
     -------
-    type
-        Description of returned object.
+    ndarray
+        Output array which has the same shape as color.
 
     """
     return np.repeat(
@@ -40,25 +40,25 @@ def adj_matrix_to_image(adj_matrix,
 
     Parameters
     ----------
-    adj_matrix : type
-        Description of parameter `adj_matrix`.
-    value_to_color : type
-        Description of parameter `value_to_color`.
-    num_cols : type
-        Description of parameter `num_cols`.
-    num_rows : type
-        Description of parameter `num_rows`.
-    col_size : type
-        Description of parameter `col_size`.
-    row_size : type
-        Description of parameter `row_size`.
-    img_dtype : type
-        Description of parameter `img_dtype`.
+    adj_matrix : ndarray, default=Required
+        Adjacency matrix.
+    value_to_color : dict
+        Dict with colors of wich tipo of terrain.
+    num_cols : int, default=7
+        number of columns.
+    num_rows : type, default=7
+        number of rows.
+    col_size : type, default=32
+        Size of columns.
+    row_size : type, default=32
+        number of rows.
+    img_dtype : type, default=np.uint8
+        Data type of image.
 
     Returns
     -------
     type
-        Description of returned object.
+        Image.
 
     """
     img = np.zeros(
@@ -90,20 +90,20 @@ def node_list_to_image(node_list,
 
     Parameters
     ----------
-    node_list : type
-        Description of parameter `node_list`.
-    item_color : type
-        Description of parameter `item_color`.
-    num_cols : type
-        Description of parameter `num_cols`.
-    num_rows : type
-        Description of parameter `num_rows`.
-    col_size : type
-        Description of parameter `col_size`.
-    row_size : type
-        Description of parameter `row_size`.
-    img_dtype : type
-        Description of parameter `img_dtype`.
+    node_list : List
+        list of nodes.
+    item_color : List
+        Item Color`.
+    num_cols : Int
+        Number of colors.
+    num_rows : int
+        Number of rows.
+    col_size : int
+        Color size.
+    row_size : int
+        Row size.
+    img_dtype : int
+        image Data type`.
 
     Returns
     -------
@@ -132,17 +132,16 @@ def plot_frame(frame, width=224, height=224, images_to_overlay=[]):
     ----------
     frame : type
         Description of parameter `frame`.
-    width : type
-        Description of parameter `width`.
-    height : type
-        Description of parameter `height`.
-    images_to_overlay : type
-        Description of parameter `images_to_overlay`.
+    width : Int
+        Frame width.
+    height : Int
+        Frame height.
+    images_to_overlay : List
+        List of frame to overlay.
 
     Returns
     -------
-    type
-        Description of returned object.
+    None
 
     """
     # overlay images on the frame

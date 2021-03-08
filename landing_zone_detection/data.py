@@ -9,14 +9,14 @@ class AerialImageData(object):
 
     Parameters
     ----------
-    frame : type
-        Description of parameter `frame`.
-    adj_matrix : type
-        Description of parameter `adj_matrix`.
-    height_map : type
-        Description of parameter `height_map`.
-    person_coord : type
-        Description of parameter `person_coord`.
+    frame : np.empty, deafult=Required
+        np.empty representing a image.
+    adj_matrix : np.empty, deafult=Required
+        np.empty representing a adj_matrix.
+    height_map : np.empty, deafult=Required
+        np.empty representing a adj_matrix.
+    person_coord : List, deafult=Required
+        List with x and y that represents the person coordenate.
 
     Attributes
     ----------
@@ -103,30 +103,30 @@ class RandomAerialImageDataGenerator(object):
 
     Parameters
     ----------
-    width : type
-        Description of parameter `width`.
-    height : type
-        Description of parameter `height`.
-    channels : type
+    width : Int, default=224
+        Image width.
+    height : Int, default=224
+        Image  height'.
+    channels : Int, default=3
         Description of parameter `channels`.
-    dtype : type
-        Description of parameter `dtype`.
-    col_size : type
-        Description of parameter `col_size`.
-    row_size : type
-        Description of parameter `row_size`.
-    terrain_options_images : type
-        Description of parameter `terrain_options_images`.
-    terrain_options_labels : type
-        Description of parameter `terrain_options_labels`.
-    terrain_options_heights : type
-        Description of parameter `terrain_options_heights`.
-    person_options_images : type
-        Description of parameter `person_options_images`.
-    person_options_labels : type
-        Description of parameter `person_options_labels`.
-    person_options_heights : type
-        Description of parameter `person_options_heights`.
+    dtype : np.uint8, default=np.uint8
+        Data type of frame.
+    col_size : Int, default=32
+        column size`.
+    row_size : Int, default=32
+        Row size`.
+    terrain_options_images : List, default=terrain_options_images
+        List of terrain images.
+    terrain_options_labels : List, default=terrain_options_labels
+        List of terrain options labels`.
+    terrain_options_heights : List, default=terrain_options_heights
+        List of terrain options heights.
+    person_options_images : List, default=person_options_images
+        List of person images.
+    person_options_labels : List, default=person_options_labels
+        List of person options images labels.
+    person_options_heights : List, default=person_options_heights
+        List of person options heights.
 
     Attributes
     ----------
@@ -187,15 +187,15 @@ class RandomAerialImageDataGenerator(object):
 
         Parameters
         ----------
-        filename : type
-            Description of parameter `filename`.
-        **kwargs : type
-            Description of parameter `**kwargs`.
+        filename : type, default=Required
+            File path.
+        **kwargs : Any, deafult=Automatically Determined
+            `**kwargs`.
 
         Returns
         -------
         type
-            Description of returned object.
+            Open image.
 
         """
         return cv2.imread(
@@ -209,17 +209,17 @@ class RandomAerialImageDataGenerator(object):
 
         Parameters
         ----------
-        img_item : type
-            Description of parameter `img_item`.
-        resize_method : type
-            Description of parameter `resize_method`.
+        img_item : Bytes
+            Open image.
+        resize_method : method, default=cv2.INTER_LINEAR,
+            Type of resize method.
         **kwargs : type
-            Description of parameter `**kwargs`.
+            **kwargs`
 
         Returns
         -------
         type
-            Description of returned object.
+            Risezed image.
 
         """
         return cv2.resize(
@@ -234,13 +234,13 @@ class RandomAerialImageDataGenerator(object):
 
         Parameters
         ----------
-        img_items : type
-            Description of parameter `img_items`.
+        img_items : List
+            List of images.
 
         Returns
         -------
         type
-            Description of returned object.
+            List of risezed images.
 
         """
         for i, img in enumerate(img_items):
@@ -258,7 +258,7 @@ class RandomAerialImageDataGenerator(object):
         Returns
         -------
         type
-            Description of returned object.
+            Dict.
 
         """
         data = AerialImageData(

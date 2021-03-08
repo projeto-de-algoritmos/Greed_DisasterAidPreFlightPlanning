@@ -8,13 +8,13 @@ def can_uav_land(label):
 
     Parameters
     ----------
-    label : type
-        Description of parameter `label`.
+    label : Int, default=Required
+        .
 
     Returns
     -------
-    type
-        Description of returned object.
+    Boolean
+        Boolean that indicates if a person can reach the frame.
 
     """
     return label == UAV_CAN_LAND_PERSON_CAN_REACH
@@ -25,13 +25,13 @@ def can_a_person_reach(label):
 
     Parameters
     ----------
-    label : type
+    label : Int, default=Required
         Description of parameter `label`.
 
     Returns
     -------
-    type
-        Description of returned object.
+    Boolean
+        Boolean that indicates if a porsan can reach the frame.
 
     """
     return label == UAV_CAN_LAND_PERSON_CAN_REACH or \
