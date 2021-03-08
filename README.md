@@ -1,5 +1,5 @@
-# Landing Zone Detection
-Determine which of the reachable detected landing zones is closest to the person.
+# Closest Landing Zone
+This algorithm finds the closest and reachable safe landing zone next to the human who's waiting for the UAV.
 
 **List Number**: X<br>
 **Discipline Subject**: Graphs II<br>
