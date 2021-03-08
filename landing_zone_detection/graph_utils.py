@@ -116,33 +116,18 @@ def find_landing_zone(data):
 
 def find_landing_zone_re(current_coord, data, shortest_paths_dict,
                          base_neighbours):
-    """Recursive part of find_landing_zone.
+    """Recursive part of find_landing_zone. It doesn't return anything, it just updates the shortest_paths_dict.
 
     Parameters
     ----------
+    current_coord : list
+        Description of parameter `current_coord`.
     data : AerialImageData
         Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
-
-    Returns
-    -------
-    (list, int)
-        Returns the shortest_path and the shortest_distance as a tuple.
-
-    Parameters
-    ----------
-    current_coord : type
-        Description of parameter `current_coord`.
-    data : type
-        Description of parameter `data`.
-    shortest_paths_dict : type
-        Description of parameter `shortest_paths_dict`.
-    base_neighbours : type
-        Description of parameter `base_neighbours`.
-
-    Returns
-    -------
-    type
-        Description of returned object.
+    shortest_paths_dict : dict
+        Dict of the path to each node.
+    base_neighbours : list of lists
+        Base neighbours of a matrix element i.e [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1]].
 
     """
     current_coord_hash = hashable_coord(current_coord)
