@@ -5,18 +5,18 @@ import os
 
 
 class AerialImageData(object):
-    """Short summary.
+    """Aerial image and its surrounding data.
 
     Parameters
     ----------
-    frame : np.empty, deafult=Required
-        np.empty representing a image.
-    adj_matrix : np.empty, deafult=Required
-        np.empty representing a adj_matrix.
-    height_map : np.empty, deafult=Required
-        np.empty representing a adj_matrix.
-    person_coord : List, deafult=Required
-        List with x and y that represents the person coordenate.
+    frame : numpy.ndarray
+        Frame (image) taken by the flying UAV.
+    adj_matrix : numpy.ndarray
+        Adjacent matrix where the meaning of each value is specified in the label_utils.py module.
+    height_map : numpy.ndarray
+        Depth estimation of the frame. Same shape as the adj_matrix.
+    person_coord : list
+        (x, y) coordinate of a person in the adj_matrix. This is the person who's supposed to receive the UAV.
 
     """
 
@@ -92,43 +92,41 @@ PERSON_OPTIONS_HEIGHTS = [
 
 
 class RandomAerialImageDataGenerator(object):
-    """Short summary.
+    """Class to generate random AerialImageData object using the given terrain and person options.
 
     Parameters
     ----------
-    width : Int, default=224
+    width : int
         Image width.
-    height : Int, default=224
-        Image  height'.
-    channels : Int, default=3
-        Description of parameter `channels`.
-    dtype : np.uint8, default=np.uint8
-        Data type of frame.
-    col_size : Int, default=32
-        column size`.
-    row_size : Int, default=32
-        Row size`.
-    terrain_options_images : List, default=terrain_options_images
-        List of terrain images.
-    terrain_options_labels : List, default=terrain_options_labels
-        List of terrain options labels`.
-    terrain_options_heights : List, default=terrain_options_heights
-        List of terrain options heights.
-    person_options_images : List, default=person_options_images
-        List of person images.
-    person_options_labels : List, default=person_options_labels
-        List of person options images labels.
-    person_options_heights : List, default=person_options_heights
-        List of person options heights.
+    height : int
+        Image  height.
+    channels : int
+        Number of channels in the image.
+    dtype : np.uint8
+        Data type of the frame.
+    col_size : int
+        Width of each adj_matrix (or height_map) item.
+    row_size : int
+        Height of each adj_matrix (or height_map) item.
+    terrain_options_images : list
+        Each item of the image can randomly assume one of this images.
+    terrain_options_labels : list
+        Labels of each option in terrain_options_images.
+    terrain_options_heights : list
+        Estimated depth (height from the drone to the ground) of each option in terrain_options_images.
+    person_options_images : list
+        Until now, only one random item of the image can assume one of this images. In other words: only one person per image.
+    person_options_labels : list
+        Labels of each person_options in person_options_images.
+    person_options_heights : list
+        Estimated depth (height from the drone to the ground) of each option in person_options_images.
 
     Attributes
     ----------
     num_cols : type
-        Description of attribute `num_cols`.
+        Number of columns in each adj_matrix (or height_map) item.
     num_rows : type
-        Description of attribute `num_rows`.
-    load_img_items : type
-        Description of attribute `load_img_items`.
+        Number of rows in each adj_matrix (or height_map) item.
 
     """
 
@@ -164,19 +162,19 @@ class RandomAerialImageDataGenerator(object):
         )
 
     def __read_img_item(self, filename, **kwargs):
-        """Short summary.
+        """Read an image item from filename.
 
         Parameters
         ----------
-        filename : type, default=Required
+        filename : str
             File path.
-        **kwargs : Any, deafult=Automatically Determined
-            `**kwargs`.
+        **kwargs : dict
+            **kwargs.
 
         Returns
         -------
-        type
-            Open image.
+        numpy.ndarray
+            2D matrix representing an image.
 
         """
         return cv2.imread(
@@ -186,21 +184,21 @@ class RandomAerialImageDataGenerator(object):
 
     def __resize_img_item(self, img_item,
                           resize_method=cv2.INTER_LINEAR, **kwargs):
-        """Short summary.
+        """Resize an image item.
 
         Parameters
         ----------
-        img_item : Bytes
-            Open image.
-        resize_method : method, default=cv2.INTER_LINEAR,
-            Type of resize method.
-        **kwargs : type
-            **kwargs`
+        img_item : numpy.ndarray
+            2D matrix representing an image.
+        resize_method : int
+            Type of the resize method i.e cv2.INTER_LINEAR.
+        **kwargs : dict
+            **kwargs
 
         Returns
         -------
-        type
-            Risezed image.
+        numpy.ndarray
+            Resized image.
 
         """
         return cv2.resize(
@@ -211,17 +209,17 @@ class RandomAerialImageDataGenerator(object):
         )
 
     def load_img_items(self, img_items):
-        """Short summary.
+        """Read and transform a list of image items.
 
         Parameters
         ----------
-        img_items : List
-            List of images.
+        img_items : list
+            List of paths, or list of numpy.ndarrays.
 
         Returns
         -------
-        type
-            List of risezed images.
+        list
+            List of the transformed images.
 
         """
         for i, img in enumerate(img_items):
@@ -234,12 +232,12 @@ class RandomAerialImageDataGenerator(object):
         return img_items
 
     def generate(self):
-        """Short summary.
+        """Generates a random AerialImageData object using the given terrain and person options.
 
         Returns
         -------
-        type
-            Dict.
+        AerialImageData
+            Aerial image and its surrounding data.
 
         """
         data = AerialImageData(

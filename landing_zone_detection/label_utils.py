@@ -4,34 +4,34 @@ UAV_CANNOT_LAND_PERSON_CANNOT_REACH = -1
 
 
 def can_uav_land(label):
-    """Short summary.
+    """Checks if an UAV can reach a position labelled with "label".
 
     Parameters
     ----------
-    label : Int, default=Required
-        .
+    label : int
+        Label of a position in the image.
 
     Returns
     -------
-    Boolean
-        Boolean that indicates if a person can reach the frame.
+    boolean
+        Whether an UAV can reach a position labelled with "label".
 
     """
     return label == UAV_CAN_LAND_PERSON_CAN_REACH
 
 
 def can_a_person_reach(label):
-    """Short summary.
+    """Checks if a person can reach a position labelled with "label".
 
     Parameters
     ----------
-    label : Int, default=Required
-        Description of parameter `label`.
+    label : int
+        Label of a position in the image.
 
     Returns
     -------
-    Boolean
-        Boolean that indicates if a porsan can reach the frame.
+    bool
+        Whether a person can reach a position labelled with "label".
 
     """
     return label == UAV_CAN_LAND_PERSON_CAN_REACH or \

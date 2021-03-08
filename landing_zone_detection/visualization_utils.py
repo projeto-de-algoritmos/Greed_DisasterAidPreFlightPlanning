@@ -4,21 +4,21 @@ import matplotlib.pyplot as plt
 
 
 def item_from_color(color, col_size=32, row_size=32):
-    """Short summary.
+    """Generates a matrix of size (col_size, row_size, len(color)) if color is 1D or a matrix of size (col_size, row_size) if color is a digit.
 
     Parameters
     ----------
-    color : List, default=Required
-        List with 3 int that describe rgb color.
-    col_size : Int, default=32
+    color : int or list
+        RGB, gray or binary color i.e [255,255,255], 255 or 1. Maybe even RGBA or whatever.
+    col_size : int
         Color size.
-    row_size : Int, default=32
+    row_size : int
         Size of a row.
 
     Returns
     -------
-    ndarray
-        Output array which has the same shape as color.
+    numpy.ndarray
+        2D matrix representing an image.
 
     """
     return np.repeat(
@@ -36,29 +36,29 @@ def adj_matrix_to_image(adj_matrix,
                         num_cols=7, num_rows=7,
                         col_size=32, row_size=32,
                         img_dtype=np.uint8):
-    """Short summary.
+    """Convert a node list to an image. Do that by coloring the image items at the coordinates in the node_list.
 
     Parameters
     ----------
-    adj_matrix : ndarray, default=Required
-        Adjacency matrix.
+    adj_matrix : numpy.ndarray
+        Adjacent matrix where the meaning of each value is specified in the label_utils.py module.
     value_to_color : dict
-        Dict with colors of wich tipo of terrain.
-    num_cols : int, default=7
-        number of columns.
-    num_rows : type, default=7
-        number of rows.
-    col_size : type, default=32
-        Size of columns.
-    row_size : type, default=32
-        number of rows.
-    img_dtype : type, default=np.uint8
-        Data type of image.
+        Dict to map each value in the adj_matrix to a differenct color.
+    num_cols : int
+        Number of columns in each adj_matrix (or height_map) item.
+    num_rows : int
+        Number of rows in each adj_matrix (or height_map) item.
+    col_size : int
+        Width of each adj_matrix (or height_map) item.
+    row_size : int
+        Height of each adj_matrix (or height_map) item.
+    img_dtype : int
+        Data type of the resulting image.
 
     Returns
     -------
-    type
-        Image.
+    numpy.ndarray
+        2D matrix representing an image.
 
     """
     img = np.zeros(
@@ -86,29 +86,29 @@ def node_list_to_image(node_list,
                        num_cols=7, num_rows=7,
                        col_size=32, row_size=32,
                        img_dtype=np.uint8):
-    """Short summary.
+    """Convert a node list to an image. Do that by coloring the image items at the coordinates in the node_list.
 
     Parameters
     ----------
-    node_list : List
-        list of nodes.
-    item_color : List
-        Item Color`.
-    num_cols : Int
-        Number of colors.
+    node_list : list
+        List of node coordinates i.e [(0,0), (0,1), (0,2), (1,2)].
+    item_color : list
+        Color of each node/item.
+    num_cols : int
+        Number of columns in each adj_matrix (or height_map) item.
     num_rows : int
-        Number of rows.
+        Number of rows in each adj_matrix (or height_map) item.
     col_size : int
-        Color size.
+        Width of each adj_matrix (or height_map) item.
     row_size : int
-        Row size.
+        Height of each adj_matrix (or height_map) item.
     img_dtype : int
-        image Data type`.
+        Data type of the resulting image.
 
     Returns
     -------
-    type
-        Description of returned object.
+    numpy.ndarray
+        2D matrix representing an image.
 
     """
     img = np.zeros(
@@ -126,22 +126,18 @@ def node_list_to_image(node_list,
 
 
 def plot_frame(frame, width=224, height=224, images_to_overlay=[]):
-    """Short summary.
+    """Method to plot the frame.
 
     Parameters
     ----------
-    frame : type
-        Description of parameter `frame`.
-    width : Int
+    frame : numpy.ndarray
+        2D matrix representing an image.
+    width : int
         Frame width.
-    height : Int
+    height : int
         Frame height.
-    images_to_overlay : List
-        List of frame to overlay.
-
-    Returns
-    -------
-    None
+    images_to_overlay : list
+        List of images to overlay on top of the frame.
 
     """
     # overlay images on the frame

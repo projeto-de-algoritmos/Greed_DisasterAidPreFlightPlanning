@@ -7,10 +7,10 @@ def do_coord_exist(coord, matrix_shape):
 
     Parameters
     ----------
-    coord : ndarray
-        Description of parameter `coord`.
-    matrix_shape : ndarray
-        Description of parameter `matrix_shape`.
+    coord : numpy.ndarray
+        2D coordinate.
+    matrix_shape : numpy.ndarray
+        Shape of the matrix to where the coordinate should point.
 
     Returns
     -------
@@ -22,61 +22,61 @@ def do_coord_exist(coord, matrix_shape):
 
 
 def distance_between_3d_points(x1, y1, z1, x2, y2, z2):
-    """Short summary.
+    """Computes the euclidean distance between two 3D points.
 
     Parameters
     ----------
-    x1 : type
-        Description of parameter `x1`.
-    y1 : type
-        Description of parameter `y1`.
-    z1 : type
-        Description of parameter `z1`.
-    x2 : type
-        Description of parameter `x2`.
-    y2 : type
-        Description of parameter `y2`.
-    z2 : type
-        Description of parameter `z2`.
+    x1 : int or float
+        x coordinate of point 1.
+    y1 : int or float
+        y coordinate of point 1`.
+    z1 : int or float
+        z coordinate of point 1`.
+    x2 : int or float
+        x coordinate of point 2`.
+    y2 : int or float
+        y coordinate of point 2`.
+    z2 : int or float
+        z coordinate of point 2`.
 
     Returns
     -------
-    type
-        Description of returned object.
+    int or float
+        Euclidean distance between two 3D points..
 
     """
     return ((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)**(1/2)
 
 
 def hashable_coord(coord):
-    """Short summary.
+    """Transforms a coord list into a hashable type.
 
     Parameters
     ----------
-    coord : type
-        Description of parameter `coord`.
+    coord : list
+        2D coordinate i.e (0,0).
 
     Returns
     -------
-    type
-        Description of returned object.
+    str
+        A representation of the coord that is hashable.
 
     """
     return str(coord)
 
 
 def find_landing_zone(data):
-    """Short summary.
+    """Find the landing zone closest to the person xy coordinates considering the z terrain elevation..
 
     Parameters
     ----------
-    data : type
-        Description of parameter `data`.
+    data : AerialImageData
+        Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
 
     Returns
     -------
-    type
-        Description of returned object.
+    (list, int)
+        Returns the shortest_path and the shortest_distance as a tuple.
 
     """
     shortest_paths_dict = {}
@@ -116,7 +116,17 @@ def find_landing_zone(data):
 
 def find_landing_zone_re(current_coord, data, shortest_paths_dict,
                          base_neighbours):
-    """Short summary.
+    """Recursive part of find_landing_zone.
+
+    Parameters
+    ----------
+    data : AerialImageData
+        Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
+
+    Returns
+    -------
+    (list, int)
+        Returns the shortest_path and the shortest_distance as a tuple.
 
     Parameters
     ----------
