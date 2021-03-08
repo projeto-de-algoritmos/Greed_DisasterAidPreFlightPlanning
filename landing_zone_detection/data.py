@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from landing_zone_detection import labels
+from landing_zone_detection import label_utils
 import os
 
 
@@ -58,23 +58,23 @@ PERSON_OPTIONS_IMAGES = [
 ]
 
 TERRAIN_OPTIONS_LABELS = [
-    labels.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass
-    labels.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass_barrel
-    labels.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass_pincushion
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass_barrel
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass_pincushion
-    labels.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree
-    labels.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree_barrel
-    labels.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree_pincushion
+    label_utils.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass
+    label_utils.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass_barrel
+    label_utils.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass_pincushion
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass_barrel
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # tall_grass_pincushion
+    label_utils.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree
+    label_utils.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree_barrel
+    label_utils.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,  # tree_pincushion
 ]
 PERSON_OPTIONS_LABELS = [
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass_barrel
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass_pincushion
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_barrel
-    labels.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_pincushion
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass_barrel
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_in_tall_grass_pincushion
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_barrel
+    label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_pincushion
 ]
 
 TERRAIN_OPTIONS_HEIGHTS = [

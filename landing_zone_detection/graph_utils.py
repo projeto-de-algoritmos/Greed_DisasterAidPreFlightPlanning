@@ -1,46 +1,24 @@
 import numpy as np
-
-from landing_zone_detection import labels
+from landing_zone_detection.label_utils import can_a_person_reach, can_uav_land
 
 
 def do_coord_exist(coord, matrix_shape):
-    """Short summary.
+    """Check if a 2D coordinate isn't out of bounds.
 
     Parameters
     ----------
-    coord : type
+    coord : ndarray
         Description of parameter `coord`.
-    matrix_shape : type
+    matrix_shape : ndarray
         Description of parameter `matrix_shape`.
 
     Returns
     -------
-    type
-        Description of returned object.
+    bool
+        Whether the coordinate exists.
 
     """
     return np.bitwise_and(coord < matrix_shape, coord >= 0).all()
-
-
-def can_a_person_reach(coord, adj_matrix):
-    """Short summary.
-
-    Parameters
-    ----------
-    coord : list or ndarray
-        2D coordinate i.e (0, 0).
-    adj_matrix : type
-        Description of parameter `adj_matrix`.
-
-    Returns
-    -------
-    type
-        Description of returned object.
-
-    """
-    value = adj_matrix[coord[0]][coord[1]]
-    return value == labels.UAV_CAN_LAND_PERSON_CAN_REACH or \
-        value == labels.UAV_CANNOT_LAND_PERSON_CAN_REACH
 
 
 def distance_between_3d_points(x1, y1, z1, x2, y2, z2):
@@ -70,7 +48,7 @@ def distance_between_3d_points(x1, y1, z1, x2, y2, z2):
     return ((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)**(1/2)
 
 
-def hash_coord(coord):
+def hashable_coord(coord):
     """Short summary.
 
     Parameters
@@ -87,18 +65,41 @@ def hash_coord(coord):
     return str(coord)
 
 
-def search(data):
+def find_landing_zone(data):
+    """Short summary.
+
+    Parameters
+    ----------
+    data : type
+        Description of parameter `data`.
+
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
     shortest_paths_dict = {}
-    person_coord_hash = hash_coord(data.person_coord)
+    person_coord_hash = hashable_coord(data.person_coord)
     shortest_paths_dict[person_coord_hash] = {}
     shortest_paths_dict[person_coord_hash]['path'] = [data.person_coord]
     shortest_paths_dict[person_coord_hash]['distance'] = 0
 
-    search_visit(data.person_coord, data, shortest_paths_dict)
+    base_neighbours = np.asarray([[1, 0], [0, 1], [1, 1],
+                                  [-1, 0], [0, -1], [-1, -1],
+                                  [-1, 1], [1, -1]])
+    find_landing_zone_re(
+        data.person_coord,
+        data,
+        shortest_paths_dict,
+        base_neighbours
+    )
 
     del shortest_paths_dict[person_coord_hash]
 
     for value in shortest_paths_dict.values():
+        if not value['can_uav_land']:
+            continue
         if 'shortest_distance' not in locals():
             shortest_path = value['path']
             shortest_distance = value['distance']
@@ -107,46 +108,71 @@ def search(data):
             shortest_path = value['path']
             shortest_distance = value['distance']
 
-    return shortest_path, shortest_distance
+    if 'shortest_distance' in locals():
+        return shortest_path, shortest_distance
+    else:
+        return [], -1
 
 
-base_neighbours = np.asarray([[1, 0], [0, 1], [1, 1],
-                              [-1, 0], [0, -1], [-1, -1],
-                              [-1, 1], [1, -1]])
+def find_landing_zone_re(current_coord, data, shortest_paths_dict,
+                         base_neighbours):
+    """Short summary.
 
+    Parameters
+    ----------
+    current_coord : type
+        Description of parameter `current_coord`.
+    data : type
+        Description of parameter `data`.
+    shortest_paths_dict : type
+        Description of parameter `shortest_paths_dict`.
+    base_neighbours : type
+        Description of parameter `base_neighbours`.
 
-def search_visit(current_coord, data, shortest_paths_dict):
-    current_coord_hash = hash_coord(current_coord)
+    Returns
+    -------
+    type
+        Description of returned object.
+
+    """
+    current_coord_hash = hashable_coord(current_coord)
     current_height = data.height_map[current_coord[0]][current_coord[1]]
+    current_item = shortest_paths_dict[current_coord_hash]
     neighbour_list = base_neighbours + np.asarray(current_coord)
-    # remove unreachable coords or coords that don't exist
-    neighbour_list = [
-        neighbour for neighbour in neighbour_list
-        if (do_coord_exist(neighbour, data.adj_matrix.shape)
-            and can_a_person_reach(neighbour, data.adj_matrix))
-    ]
-    for neighbour_coord in neighbour_list:
-        neighbour_coord_hash = hash_coord(neighbour_coord)
-        neighbour_height = data\
-            .height_map[neighbour_coord[0]][neighbour_coord[1]]
-        distance = shortest_paths_dict[current_coord_hash]['distance'] + \
+    for nb_coord in neighbour_list:
+        # ignore coords that do not exist i.e (-1, 99999999)
+        if not do_coord_exist(nb_coord, data.adj_matrix.shape):
+            continue
+        nb_label = data.adj_matrix[nb_coord[0]][nb_coord[1]]
+        # ignore unreachable coords
+        if not can_a_person_reach(nb_label):
+            continue
+
+        nb_coord_hashable = hashable_coord(nb_coord)
+        nb_height = data.height_map[nb_coord[0]][nb_coord[1]]
+        nb_distance = current_item['distance'] + \
             distance_between_3d_points(
                 *current_coord, abs(current_height),
-                *neighbour_coord, abs(neighbour_height)
+                *nb_coord, abs(nb_height)
             )
 
-        if neighbour_coord_hash not in shortest_paths_dict:
-            shortest_paths_dict[neighbour_coord_hash] = {}
+        if nb_coord_hashable not in shortest_paths_dict:
+            shortest_paths_dict[nb_coord_hashable] = {}
         else:
-            if distance > shortest_paths_dict[neighbour_coord_hash]['distance']:
+            if nb_distance > shortest_paths_dict[nb_coord_hashable]['distance']:
                 continue
+        nb_coord_item = shortest_paths_dict[nb_coord_hashable]
 
-        path = [
+        nb_coord_item['distance'] = nb_distance
+        nb_coord_item['path'] = [
             *shortest_paths_dict[current_coord_hash]['path'],
-            neighbour_coord
+            nb_coord
         ]
+        if can_uav_land(nb_label):
+            nb_coord_item['can_uav_land'] = True
+        else:
+            nb_coord_item['can_uav_land'] = False
 
-        shortest_paths_dict[neighbour_coord_hash]['path'] = path
-        shortest_paths_dict[neighbour_coord_hash]['distance'] = distance
-
-        search_visit(neighbour_coord, data, shortest_paths_dict)
+        find_landing_zone_re(
+            nb_coord, data, shortest_paths_dict, base_neighbours
+        )
