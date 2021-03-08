@@ -26,6 +26,8 @@ Access the [app](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_Closes
 
 ## How to use
 
+The app generate a random image for each iteration. Everytime you click the update button, a new random image is generated and the algorithm gets executed.
+
 ## References
 
 Jupyter et al., "Binder 2.0 - Reproducible, Interactive, Sharable
