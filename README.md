@@ -22,7 +22,7 @@ Determine which of the reachable detected landing zones is closest to the person
 ## How to run
 **Language**: Python.<br>
 **Frameworks**: OpenCV; Jupyter Voilà; BinderHub.<br>
-Access the [app](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_LandingZoneDetection/main?urlpath=%2Fvoila%2Frender%2Fapp.ipynb) or the [notebook](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_LandingZoneDetection/main?filepath=app.ipynb) with the BinderHub server.
+Access the [app](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_ClosestLandingZone/main?urlpath=%2Fvoila%2Frender%2Fapp.ipynb) or the [notebook](https://mybinder.org/v2/gh/projeto-de-algoritmos/Grafos2_ClosestLandingZone/main?filepath=app.ipynb) with the BinderHub server.
 
 ## How to use
 
