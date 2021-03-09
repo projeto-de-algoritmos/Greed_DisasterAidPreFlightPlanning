@@ -251,11 +251,11 @@ class RandomAerialImageDataGenerator(object):
             ),
             adj_matrix=np.empty(
                 (self.num_cols, self.num_rows),
-                dtype=np.int8,
+                dtype=np.float32,
             ),
             height_map=np.empty(
                 (self.num_cols, self.num_rows),
-                dtype=np.int8,
+                dtype=np.float32,
             )
         )
         # populate with the terrain options
