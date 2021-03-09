@@ -11,7 +11,13 @@ This algorithm finds the closest and reachable safe landing zone next to the hum
 | 19/0046945  |  Leonardo Michalski Miranda |
 
 ## About
+We generated some mock test data from Pokemon Emerald. These are the rules for it:
 
+* The UAV can only land in the green area with low grass.
+
+* A human can move between areas with tall grass and low grass, but not trees.
+
+The closest path is not always the most obvious as there are unevenness between the terrains, so the algorithm must be able to find the shortest path taking it into account. There might also be a landing zone that is so high that it is unreachable by a human, like the roof of a house. So even if it's the closest place the UAV cannot land there.
 
 ## App Gif
 ![App Gif](assets/app_gif.gif)
