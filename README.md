@@ -1,5 +1,5 @@
 # Closest Landing Zone
-This algorithm finds the closest and reachable safe landing zone next to the human who's waiting for the UAV.
+This algorithm finds the closest and reachable safe landing zone next to the human who's waiting for the autonomous UAV.
 
 **List Number**: X<br>
 **Discipline Subject**: Graphs II<br>
@@ -22,8 +22,8 @@ The closest path is not always the most obvious as there are unevenness between 
 ## App Gif
 ![App Gif](assets/app_gif.gif)
 
-## Video (pt-br, [download link](https://raw.githubusercontent.com/projeto-de-algoritmos/Grafos2_LandingZoneDetection/main/assets/app_video.mp4))
-[![](assets/app_video_splash_screen.png)]()
+## Video (pt-br, [download link](https://raw.githubusercontent.com/projeto-de-algoritmos/Grafos2_ClosestLandingZone/main/assets/app_video.mp4))
+[![](assets/app_video_splash_screen.png)](https://youtu.be/RJ-OouSKQ2Y)
 
 ## How to run
 **Language**: Python.<br>
