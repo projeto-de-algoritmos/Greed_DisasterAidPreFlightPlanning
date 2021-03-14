@@ -8,7 +8,7 @@ def do_coord_exist(coord, matrix_shape):
     Parameters
     ----------
     coord : numpy.ndarray
-        2D coordinate.
+        2D coordinate i.e (0,0).
     matrix_shape : numpy.ndarray
         Shape of the matrix to where the coordinate should point.
 
@@ -125,13 +125,13 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
     Parameters
     ----------
     current_coord : list
-        Description of parameter `current_coord`.
+        2D coordinate i.e (0,0).
     data : AerialImageData
         Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
     shortest_paths_dict : dict
         Dict of the path to each node.
     base_neighbours : list of lists
-        Base neighbours of a matrix element i.e [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1]].
+        Neighbours of [0,0]: [1,0], [0,1], [1,1], [-1,0], [0,-1], [-1,-1], [-1,1], [1,-1]. Some of them may not exist in a 2D image.
 
     """
     current_coord_hash = hashable_coord(current_coord, data.adj_matrix.shape)
@@ -139,32 +139,35 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
     current_item = shortest_paths_dict[current_coord_hash]
     neighbour_list = base_neighbours + np.asarray(current_coord)
     for nb_coord in neighbour_list:
-        # ignore coords that do not exist i.e (-1, 99999999)
+        # Ignore coords that do not exist i.e (-1, 99999999).
         if not do_coord_exist(nb_coord, data.adj_matrix.shape):
             continue
         nb_label = data.adj_matrix[nb_coord[0]][nb_coord[1]]
-        # ignore unreachable coords
+        # Ignore unreachable coords.
         if not can_a_person_reach(nb_label):
             continue
 
         nb_coord_hashable = hashable_coord(nb_coord, data.adj_matrix.shape)
+        # Calculate the distance from the person to the node.
         nb_height = data.height_map[nb_coord[0]][nb_coord[1]]
         nb_distance = current_item['distance'] + \
             distance_between_3d_points(
                 current_coord[0], current_coord[1], abs(current_height),
                 nb_coord[0], nb_coord[1], abs(nb_height)
             )
-
+        # If neighbour's already in shortest_paths_dict, access it. Otherwise,
+        # create and put it into the shortest_paths_dict.
         if nb_coord_hashable not in shortest_paths_dict:
             shortest_paths_dict[nb_coord_hashable] = {}
         else:
+            # Check if the calculated distance is shorter than the prev distance.
+            # If so, update the values inside nb_coord_item.
             if nb_distance > shortest_paths_dict[nb_coord_hashable]['distance']:
                 continue
         nb_coord_item = shortest_paths_dict[nb_coord_hashable]
-
         nb_coord_item['distance'] = nb_distance
-        nb_coord_item['path'] = shortest_paths_dict[current_coord_hash]['path'][:]
-        nb_coord_item['path'].append(nb_coord)
+        nb_coord_item['path'] = shortest_paths_dict[current_coord_hash]['path']\
+            + [nb_coord]
         if can_uav_land(nb_label):
             nb_coord_item['can_uav_land'] = True
         else:
