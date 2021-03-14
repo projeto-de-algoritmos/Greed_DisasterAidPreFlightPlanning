@@ -48,21 +48,23 @@ def distance_between_3d_points(x1, y1, z1, x2, y2, z2):
     return ((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)**(1/2)
 
 
-def hashable_coord(coord):
+def hashable_coord(coord, img_shape):
     """Transforms a coord list into a hashable type.
 
     Parameters
     ----------
-    coord : list
+    coord : list or ndarray
         2D coordinate i.e (0,0).
+    img_shape : list or ndarray
+        Shape of the image i.e [1920, 1080, 3] or [1920, 1080].
 
     Returns
     -------
-    str
+    int
         A representation of the coord that is hashable.
 
     """
-    return str(coord)
+    return coord[0] * img_shape[0] + coord[1]
 
 
 def find_landing_zone(data):
@@ -80,7 +82,9 @@ def find_landing_zone(data):
 
     """
     shortest_paths_dict = {}
-    person_coord_hash = hashable_coord(data.person_coord)
+    person_coord_hash = hashable_coord(
+        data.person_coord, data.adj_matrix.shape
+    )
     shortest_paths_dict[person_coord_hash] = {}
     shortest_paths_dict[person_coord_hash]['path'] = [data.person_coord]
     shortest_paths_dict[person_coord_hash]['distance'] = 0
@@ -130,7 +134,7 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
         Base neighbours of a matrix element i.e [[1, 0], [0, 1], [1, 1], [-1, 0], [0, -1], [-1, -1], [-1, 1], [1, -1]].
 
     """
-    current_coord_hash = hashable_coord(current_coord)
+    current_coord_hash = hashable_coord(current_coord, data.adj_matrix.shape)
     current_height = data.height_map[current_coord[0]][current_coord[1]]
     current_item = shortest_paths_dict[current_coord_hash]
     neighbour_list = base_neighbours + np.asarray(current_coord)
@@ -143,7 +147,7 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
         if not can_a_person_reach(nb_label):
             continue
 
-        nb_coord_hashable = hashable_coord(nb_coord)
+        nb_coord_hashable = hashable_coord(nb_coord, data.adj_matrix.shape)
         nb_height = data.height_map[nb_coord[0]][nb_coord[1]]
         nb_distance = current_item['distance'] + \
             distance_between_3d_points(
