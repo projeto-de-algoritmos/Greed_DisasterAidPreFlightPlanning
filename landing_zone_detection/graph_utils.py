@@ -48,14 +48,14 @@ def distance_between_3d_points(x1, y1, z1, x2, y2, z2):
     return ((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)**(1/2)
 
 
-def hashable_coord(coord, img_shape):
+def hashable_coord(coord, mtx_shape):
     """Transforms a coord list into a hashable type.
 
     Parameters
     ----------
     coord : list or ndarray
         2D coordinate i.e (0,0).
-    img_shape : list or ndarray
+    mtx_shape : list or ndarray
         Shape of the image i.e [1920, 1080, 3] or [1920, 1080].
 
     Returns
@@ -64,7 +64,55 @@ def hashable_coord(coord, img_shape):
         A representation of the coord that is hashable.
 
     """
-    return coord[0] * img_shape[0] + coord[1]
+    return coord[0] * mtx_shape[0] + coord[1]
+
+
+class Node(object):
+    """Short summary.
+
+    Parameters
+    ----------
+    coord : list or ndarray
+        2D coordinate i.e (0,0).
+    mtx_shape : list or ndarray
+        Shape of the adj_matrix i.e [7, 7].
+    label : type
+        Description of parameter `label`.
+    height : type
+        Description of parameter `height`.
+    distance : type
+        Description of parameter `distance`.
+    path : type
+        Description of parameter `path`.
+
+    Attributes
+    ----------
+    hash : type
+        Description of attribute `hash`.
+    __hash__ : type
+        Description of attribute `__hash__`.
+    """
+
+    def __init__(self, coord, mtx_shape,
+                 label=None, height=None, distance=-1, path=[]):
+        self.coord = coord
+        self.mtx_shape = mtx_shape
+        self.label = label
+        self.height = height
+        self.distance = distance
+        self.path = path
+        self.hash = self.__hash__(coord=self.coord, mtx_shape=self.mtx_shape)
+
+    def __hash__(self, coord, mtx_shape):
+        """Hash the node.
+
+        Returns
+        -------
+        int
+            A representation of the coord that is hashable.
+
+        """
+        return hashable_coord(coord=coord, mtx_shape=mtx_shape)
 
 
 def find_landing_zone(data):
@@ -81,51 +129,51 @@ def find_landing_zone(data):
         Returns the shortest_path and the shortest_distance as a tuple.
 
     """
-    shortest_paths_dict = {}
-    person_coord_hash = hashable_coord(
-        data.person_coord, data.adj_matrix.shape
-    )
-    shortest_paths_dict[person_coord_hash] = {}
-    shortest_paths_dict[person_coord_hash]['path'] = [data.person_coord]
-    shortest_paths_dict[person_coord_hash]['distance'] = 0
-
+    # TODO: [performance] move code to C/C++ or to a recursive language
     base_neighbours = np.asarray([[1, 0], [0, 1], [1, 1],
                                   [-1, 0], [0, -1], [-1, -1],
                                   [-1, 1], [1, -1]])
+    shortest_paths_dict = {}
+
+    person_node = Node(
+        coord=data.person_coord,
+        mtx_shape=data.adj_matrix.shape,
+        path=[data.person_coord],
+        distance=0,
+        height=data.height_map[data.person_coord[0]][data.person_coord[1]],
+        label=data.adj_matrix[data.person_coord[0]][data.person_coord[1]],
+    )
+    shortest_paths_dict[person_node.hash] = person_node
     find_landing_zone_re(
-        data.person_coord,
+        person_node,
         data,
         shortest_paths_dict,
         base_neighbours
     )
 
-    del shortest_paths_dict[person_coord_hash]
+    del shortest_paths_dict[person_node.hash]
 
-    for value in shortest_paths_dict.values():
-        if not value['can_uav_land']:
+    shortest_path = []
+    shortest_distance = -1
+
+    for node in shortest_paths_dict.values():
+        if not can_uav_land(node.label):
             continue
-        if 'shortest_distance' not in locals():
-            shortest_path = value['path']
-            shortest_distance = value['distance']
-            continue
-        if shortest_distance > value['distance']:
-            shortest_path = value['path']
-            shortest_distance = value['distance']
+        if (shortest_distance > node.distance) or (shortest_distance == -1):
+            shortest_path = node.path
+            shortest_distance = node.distance
 
-    if 'shortest_distance' in locals():
-        return shortest_path, shortest_distance
-    else:
-        return [], -1
+    return shortest_path, shortest_distance
 
 
-def find_landing_zone_re(current_coord, data, shortest_paths_dict,
+def find_landing_zone_re(curr_node, data, shortest_paths_dict,
                          base_neighbours):
     """Recursive part of find_landing_zone. It doesn't return anything, it just updates the shortest_paths_dict.
 
     Parameters
     ----------
-    current_coord : list
-        2D coordinate i.e (0,0).
+    curr_node : Node
+        Current node.
     data : AerialImageData
         Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
     shortest_paths_dict : dict
@@ -134,45 +182,50 @@ def find_landing_zone_re(current_coord, data, shortest_paths_dict,
         Neighbours of [0,0]: [1,0], [0,1], [1,1], [-1,0], [0,-1], [-1,-1], [-1,1], [1,-1]. Some of them may not exist in a 2D image.
 
     """
-    current_coord_hash = hashable_coord(current_coord, data.adj_matrix.shape)
-    current_height = data.height_map[current_coord[0]][current_coord[1]]
-    current_item = shortest_paths_dict[current_coord_hash]
-    neighbour_list = base_neighbours + np.asarray(current_coord)
-    for nb_coord in neighbour_list:
+    neighbour_list = base_neighbours + np.asarray(curr_node.coord)
+    for nb_node_coord in neighbour_list:
         # Ignore coords that do not exist i.e (-1, 99999999).
-        if not do_coord_exist(nb_coord, data.adj_matrix.shape):
+        if not do_coord_exist(nb_node_coord, curr_node.mtx_shape):
             continue
-        nb_label = data.adj_matrix[nb_coord[0]][nb_coord[1]]
         # Ignore unreachable coords.
-        if not can_a_person_reach(nb_label):
+        nb_node_label = data.adj_matrix[nb_node_coord[0]][nb_node_coord[1]]
+        if not can_a_person_reach(nb_node_label):
             continue
-
-        nb_coord_hashable = hashable_coord(nb_coord, data.adj_matrix.shape)
-        # Calculate the distance from the person to the node.
-        nb_height = data.height_map[nb_coord[0]][nb_coord[1]]
-        nb_distance = current_item['distance'] + \
-            distance_between_3d_points(
-                current_coord[0], current_coord[1], abs(current_height),
-                nb_coord[0], nb_coord[1], abs(nb_height)
-            )
         # If neighbour's already in shortest_paths_dict, access it. Otherwise,
-        # create and put it into the shortest_paths_dict.
-        if nb_coord_hashable not in shortest_paths_dict:
-            shortest_paths_dict[nb_coord_hashable] = {}
-        else:
-            # Check if the calculated distance is shorter than the prev distance.
-            # If so, update the values inside nb_coord_item.
-            if nb_distance > shortest_paths_dict[nb_coord_hashable]['distance']:
-                continue
-        nb_coord_item = shortest_paths_dict[nb_coord_hashable]
-        nb_coord_item['distance'] = nb_distance
-        nb_coord_item['path'] = shortest_paths_dict[current_coord_hash]['path']\
-            + [nb_coord]
-        if can_uav_land(nb_label):
-            nb_coord_item['can_uav_land'] = True
-        else:
-            nb_coord_item['can_uav_land'] = False
-
-        find_landing_zone_re(
-            nb_coord, data, shortest_paths_dict, base_neighbours
+        # create but DON'T put it into the shortest_paths_dict.
+        nb_node_hash = Node.__hash__(
+            self=None,
+            coord=nb_node_coord,
+            mtx_shape=curr_node.mtx_shape
         )
+        node_was_here_before = nb_node_hash in shortest_paths_dict
+        if node_was_here_before:
+            nb_node = shortest_paths_dict[nb_node_hash]
+        else:
+            nb_node = Node(
+                coord=nb_node_coord,
+                mtx_shape=curr_node.mtx_shape,
+                height=data.height_map[nb_node_coord[0]][nb_node_coord[1]],
+                label=nb_node_label,
+            )
+        # Calculate the distance from the person to the node.
+        nb_node_distance = curr_node.distance + \
+            distance_between_3d_points(
+                curr_node.coord[0], curr_node.coord[1], abs(curr_node.height),
+                nb_node.coord[0], nb_node.coord[1], abs(nb_node.height)
+            )
+        # Check if the calculated distance is shorter than the prev distance.
+        # If so, update the values inside nb_node.
+        if node_was_here_before:
+            if (nb_node_distance > nb_node.distance)\
+                    and (not nb_node.distance == -1):
+                continue
+        else:
+            shortest_paths_dict[nb_node_hash] = nb_node
+        nb_node.distance = nb_node_distance
+        nb_node.path = curr_node.path + [nb_node.coord]
+        shortest_paths_dict[nb_node.hash] = nb_node
+        find_landing_zone_re(
+            nb_node, data, shortest_paths_dict, base_neighbours
+        )
+        shortest_paths_dict[nb_node.hash] = nb_node
