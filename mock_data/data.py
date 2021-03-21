@@ -304,6 +304,8 @@ class RandomAerialImageDataGenerator(object):
         ----------
         people_quantity : int
             How many people to place in the frame or map.
+        place_helipad : bool
+            Wether to place a helipad at a random location.
 
         Returns
         ----------
@@ -330,7 +332,7 @@ class RandomAerialImageDataGenerator(object):
                 (self.num_cols, self.num_rows),
                 dtype=np.float32,
             ),
-            height_map = np.empty(
+            height_map=np.empty(
                 (self.num_cols, self.num_rows),
                 dtype=np.float32,
             ),
