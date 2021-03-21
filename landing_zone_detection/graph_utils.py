@@ -115,19 +115,22 @@ class Node(object):
         return hashable_coord(coord=coord, mtx_shape=mtx_shape)
 
 
-def find_landing_zone(data):
+def find_landing_zone(person_coord, adj_matrix, height_map):
     """Find the landing zone closest to the person xy coordinates considering the z terrain elevation..
 
     Parameters
     ----------
-    data : AerialImageData
-        Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
+    person_coord : list
+        (x, y) coordinate in the adj_matrix of the person supposed to receive supplies or deliveries.
+    adj_matrix : numpy.ndarray
+        Adjacent matrix where the meaning of each value is specified in the label_utils.py module.
+    height_map : numpy.ndarray
+        Depth estimation of the frame. Same shape as the adj_matrix.
 
     Returns
     -------
     (list, int)
         Returns the shortest_path and the shortest_distance as a tuple.
-
     """
     # TODO: [performance] move code to C/C++ or to a recursive language
     base_neighbours = np.asarray([[1, 0], [0, 1], [1, 1],
@@ -136,19 +139,20 @@ def find_landing_zone(data):
     shortest_paths_dict = {}
 
     person_node = Node(
-        coord=data.person_coord,
-        mtx_shape=data.adj_matrix.shape,
-        path=[data.person_coord],
+        coord=person_coord,
+        mtx_shape=adj_matrix.shape,
+        path=[person_coord],
         distance=0,
-        height=data.height_map[data.person_coord[0]][data.person_coord[1]],
-        label=data.adj_matrix[data.person_coord[0]][data.person_coord[1]],
+        height=height_map[person_coord[0]][person_coord[1]],
+        label=adj_matrix[person_coord[0]][person_coord[1]],
     )
     shortest_paths_dict[person_node.hash] = person_node
     find_landing_zone_re(
-        person_node,
-        data,
-        shortest_paths_dict,
-        base_neighbours
+        curr_node=person_node,
+        adj_matrix=adj_matrix,
+        height_map=height_map,
+        shortest_paths_dict=shortest_paths_dict,
+        base_neighbours=base_neighbours
     )
 
     del shortest_paths_dict[person_node.hash]
@@ -166,7 +170,9 @@ def find_landing_zone(data):
     return shortest_path, shortest_distance
 
 
-def find_landing_zone_re(curr_node, data, shortest_paths_dict,
+def find_landing_zone_re(curr_node,
+                         adj_matrix, height_map,
+                         shortest_paths_dict,
                          base_neighbours):
     """Recursive part of find_landing_zone. It doesn't return anything, it just updates the shortest_paths_dict.
 
@@ -174,8 +180,8 @@ def find_landing_zone_re(curr_node, data, shortest_paths_dict,
     ----------
     curr_node : Node
         Current node.
-    data : AerialImageData
-        Aerial image and its surrounding data (frame, adj_matrix, height_map and person_coord).
+
+
     shortest_paths_dict : dict
         Dict of the path to each node.
     base_neighbours : list of lists
@@ -188,7 +194,7 @@ def find_landing_zone_re(curr_node, data, shortest_paths_dict,
         if not do_coord_exist(nb_node_coord, curr_node.mtx_shape):
             continue
         # Ignore unreachable coords.
-        nb_node_label = data.adj_matrix[nb_node_coord[0]][nb_node_coord[1]]
+        nb_node_label = adj_matrix[nb_node_coord[0]][nb_node_coord[1]]
         if not can_a_person_reach(nb_node_label):
             continue
         # If neighbour's already in shortest_paths_dict, access it. Otherwise,
@@ -205,7 +211,7 @@ def find_landing_zone_re(curr_node, data, shortest_paths_dict,
             nb_node = Node(
                 coord=nb_node_coord,
                 mtx_shape=curr_node.mtx_shape,
-                height=data.height_map[nb_node_coord[0]][nb_node_coord[1]],
+                height=height_map[nb_node_coord[0]][nb_node_coord[1]],
                 label=nb_node_label,
             )
         # Calculate the distance from the person to the node.
@@ -226,6 +232,10 @@ def find_landing_zone_re(curr_node, data, shortest_paths_dict,
         nb_node.path = curr_node.path + [nb_node.coord]
         shortest_paths_dict[nb_node.hash] = nb_node
         find_landing_zone_re(
-            nb_node, data, shortest_paths_dict, base_neighbours
+            curr_node=nb_node,
+            adj_matrix=adj_matrix,
+            height_map=height_map,
+            shortest_paths_dict=shortest_paths_dict,
+            base_neighbours=base_neighbours
         )
         shortest_paths_dict[nb_node.hash] = nb_node

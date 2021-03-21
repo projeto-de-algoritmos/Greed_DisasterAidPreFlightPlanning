@@ -10,26 +10,26 @@ class AerialImageData(object):
     Parameters
     ----------
     frame : numpy.ndarray
-        Frame (image) taken by the flying UAV.
+        Grid of frames taken by UAVs. May be a single frame.
     adj_matrix : numpy.ndarray
         Adjacent matrix where the meaning of each value is specified in the label_utils.py module.
     height_map : numpy.ndarray
-        Depth estimation of the frame. Same shape as the adj_matrix.
-    person_coord : list
-        (x, y) coordinate of a person in the adj_matrix. This is the person who's supposed to receive the UAV.
+        Depth estimation of the frame or map. Same shape as the adj_matrix.
+    person_coord_list : list of lists
+        (x, y) coordinates in the adj_matrix of the people supposed to receive supplies or deliveries.
 
     """
 
     def __init__(self, frame=None, adj_matrix=None, height_map=None,
-                 person_coord=None):
+                 person_coord_list=None):
         self.frame = frame
         self.adj_matrix = adj_matrix
         self.height_map = height_map
-        self.person_coord = person_coord
+        self.person_coord_list = person_coord_list
 
 
 # UTILITIES TO GENERATE RANDOM DATA
-MOCK_DATA_PATH = 'mock_data'
+MOCK_DATA_PATH = os.path.join('mock_data', 'images')
 TERRAIN_OPTIONS_IMAGES = [
     os.path.join(MOCK_DATA_PATH, 'grass.png'),
     os.path.join(MOCK_DATA_PATH, 'grass_barrel.png'),
@@ -231,13 +231,48 @@ class RandomAerialImageDataGenerator(object):
             img_items[i] = img
         return img_items
 
-    def generate(self):
+    def place_people_on_frame(self, frame, adj_matrix, height_map,
+                              people_quantity):
+        assert people_quantity <= (self.num_cols * self.num_rows)/2
+        unique_random_coords = []
+        while len(unique_random_coords) < people_quantity:
+            coord = [
+                np.random.choice(self.num_cols),
+                np.random.choice(self.num_rows)
+            ]
+            if coord not in unique_random_coords:
+                unique_random_coords.append(coord)
+        for (i, j) in unique_random_coords:
+            x1 = self.col_size*i
+            x2 = self.col_size*(i+1)
+            y1 = self.row_size*j
+            y2 = self.row_size*(j+1)
+            chosen_item_idx = np.random.choice(len(self.person_options_images))
+            height_map[i][j] = self.person_options_heights[chosen_item_idx]
+            adj_matrix[i][j] = self.person_options_labels[chosen_item_idx]
+            frame[x1:x2, y1:y2, :] = self.person_options_images[
+                chosen_item_idx
+            ]
+        return frame, adj_matrix, height_map, unique_random_coords
+
+    def generate(self, people_quantity):
         """Generates a random AerialImageData object using the given terrain and person options.
 
+        Parameter
+        ----------
+        people_quantity : int
+            How many people to place in the frame or map.
+
         Returns
-        -------
-        AerialImageData
-            Aerial image and its surrounding data.
+        ----------
+        numpy.ndarray
+            Grid of frames taken by UAVs. May be a single frame.
+        numpy.ndarray
+            Adjacent matrix where the meaning of each value is specified in the label_utils.py module.
+        numpy.ndarray
+            Depth estimation of the frame or map. Same shape as the adj_matrix.
+        list
+            (x, y) coordinates in the adj_matrix of the people supposed to receive supplies or deliveries.
 
         """
         data = AerialImageData(
@@ -253,10 +288,11 @@ class RandomAerialImageDataGenerator(object):
                 (self.num_cols, self.num_rows),
                 dtype=np.float32,
             ),
-            height_map=np.empty(
+            height_map = np.empty(
                 (self.num_cols, self.num_rows),
                 dtype=np.float32,
-            )
+            ),
+
         )
         # populate with the terrain options
         for i in range(self.num_cols):
@@ -276,18 +312,11 @@ class RandomAerialImageDataGenerator(object):
                 data.frame[x1:x2, y1:y2, :] = \
                     self.terrain_options_images[chosen_item_idx]
         # choose a single terrain item randomly and subtitute it with a person
-        i = np.random.choice(self.num_cols)
-        x1 = self.col_size*i
-        x2 = self.col_size*(i+1)
-        j = np.random.choice(self.num_rows)
-        y1 = self.row_size*j
-        y2 = self.row_size*(j+1)
-        chosen_item_idx = np.random.choice(len(self.person_options_images))
-        data.height_map[i][j] = self.person_options_heights[chosen_item_idx]
-        data.adj_matrix[i][j] = self.person_options_labels[chosen_item_idx]
-        data.frame[x1:x2, y1:y2, :] = self.person_options_images[
-            chosen_item_idx
-        ]
-        # store the coordinate of the person
-        data.person_coord = [i, j]
+        data.frame, data.adj_matrix, data.height_map, data.person_coord_list =\
+            self.place_people_on_frame(
+                frame=data.frame,
+                adj_matrix=data.adj_matrix,
+                height_map=data.height_map,
+                people_quantity=people_quantity
+            )
         return data

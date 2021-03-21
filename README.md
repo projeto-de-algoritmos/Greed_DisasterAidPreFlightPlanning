@@ -30,7 +30,7 @@ We generated some mock test data from Pokemon Emerald. These are the rules for i
 * **2. Pre-Flight Planning**: Prim-like algorithm. For each MAV, it finds a path that doesn't exceed the MAV's maximum flight time and, at the same time, heads back to the home GPS location. Each path is a cut of the GPS coordinates minimum spanning tree.
   * **Inputs**:
     * **List of GPS coordinates**: We consider that, previously to the cargo MAVs, exploration MAVs were sent to locate the humans that could receive supplies. After exploring, those MAVs messaged the Ground Control Station a list of GPS coordinates corresponding to those humans locations. But there's an issue: the error of the GPS measurements. As this is a simulation, we decided that the human could be anywhere within a radius (radius value equals to GPS error) that the cargo MAV camera can capture, but that the cargo MAVs can reach precisely the same GPS coordinate that's in the "List of GPS coordinates".
-    * **Speed**: 
+    * **Speed**:
     * **Landing time**: Time each MAV takes to land vertically (we're not considering other kinds of landing).
     * **Take-off time**: Time each MAV takes to takeoff vertically (we're not considering other kinds of takeoff).
     * **Maximum flight time**: Maximum flight time of each MAV. We assume that there's only one type of MAV and that every battery lasts the same amount of time.
