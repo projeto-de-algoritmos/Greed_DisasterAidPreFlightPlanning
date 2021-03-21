@@ -21,11 +21,12 @@ class AerialImageData(object):
     """
 
     def __init__(self, frame=None, adj_matrix=None, height_map=None,
-                 person_coord_list=None):
+                 person_coord_list=None, helipad_coord=None):
         self.frame = frame
         self.adj_matrix = adj_matrix
         self.height_map = height_map
         self.person_coord_list = person_coord_list
+        self.helipad_coord = helipad_coord
 
 
 # UTILITIES TO GENERATE RANDOM DATA
@@ -49,6 +50,9 @@ PERSON_OPTIONS_IMAGES = [
     os.path.join(MOCK_DATA_PATH, 'person_on_grass_barrel.png'),
     os.path.join(MOCK_DATA_PATH, 'person_on_grass_pincushion.png'),
 ]
+HELIPAD_OPTIONS_IMAGES = [
+    os.path.join(MOCK_DATA_PATH, 'helipad.png'),
+]
 
 TERRAIN_OPTIONS_LABELS = [
     label_utils.UAV_CAN_LAND_PERSON_CAN_REACH,  # grass
@@ -69,6 +73,11 @@ PERSON_OPTIONS_LABELS = [
     label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_barrel
     label_utils.UAV_CANNOT_LAND_PERSON_CAN_REACH,  # person_on_grass_pincushion
 ]
+HELIPAD_OPTIONS_LABELS = [
+    # The landing pad we're talking about here is the take-off zone.
+    # We don't want to land there.
+    label_utils.UAV_CANNOT_LAND_PERSON_CANNOT_REACH,
+]
 
 TERRAIN_OPTIONS_HEIGHTS = [
     0,  # grass
@@ -88,6 +97,9 @@ PERSON_OPTIONS_HEIGHTS = [
     0,  # person_on_grass
     0.8,  # person_on_grass_barrel
     -1.2,  # person_on_grass_pincushion
+]
+HELIPAD_OPTIONS_HEIGHTS = [
+    0,
 ]
 
 
@@ -115,11 +127,17 @@ class RandomAerialImageDataGenerator(object):
     terrain_options_heights : list
         Estimated depth (height from the drone to the ground) of each option in terrain_options_images.
     person_options_images : list
-        Until now, only one random item of the image can assume one of this images. In other words: only one person per image.
+        Each item of the image can randomly assume one of this images. The number of those items can be limited by @generate parameters.
     person_options_labels : list
         Labels of each person_options in person_options_images.
     person_options_heights : list
         Estimated depth (height from the drone to the ground) of each option in person_options_images.
+    helipad_options_images : list
+        Until now, only one random item of the image can assume one of this images. In other words: only one helipad per image.
+    helipad_options_labels : list
+        Labels of each helipad_options in helipad_options_images.
+    helipad_options_heights : list
+        Estimated depth (height from the drone to the ground) of each option in helipad_options_images.
 
     Attributes
     ----------
@@ -137,7 +155,10 @@ class RandomAerialImageDataGenerator(object):
                  terrain_options_heights=TERRAIN_OPTIONS_HEIGHTS,
                  person_options_images=PERSON_OPTIONS_IMAGES,
                  person_options_labels=PERSON_OPTIONS_LABELS,
-                 person_options_heights=PERSON_OPTIONS_HEIGHTS):
+                 person_options_heights=PERSON_OPTIONS_HEIGHTS,
+                 helipad_options_images=HELIPAD_OPTIONS_IMAGES,
+                 helipad_options_labels=HELIPAD_OPTIONS_LABELS,
+                 helipad_options_heights=HELIPAD_OPTIONS_HEIGHTS):
         self.width = width
         self.height = height
         self.channels = channels
@@ -150,6 +171,9 @@ class RandomAerialImageDataGenerator(object):
         self.person_options_images = person_options_images
         self.person_options_labels = person_options_labels
         self.person_options_heights = person_options_heights
+        self.helipad_options_images = helipad_options_images
+        self.helipad_options_labels = helipad_options_labels
+        self.helipad_options_heights = helipad_options_heights
 
         self.num_cols = self.width // self.col_size
         self.num_rows = self.height // self.row_size
@@ -159,6 +183,9 @@ class RandomAerialImageDataGenerator(object):
         )
         self.person_options_images = self.load_img_items(
             self.person_options_images
+        )
+        self.helipad_options_images = self.load_img_items(
+            self.helipad_options_images
         )
 
     def __read_img_item(self, filename, **kwargs):
@@ -255,7 +282,22 @@ class RandomAerialImageDataGenerator(object):
             ]
         return frame, adj_matrix, height_map, unique_random_coords
 
-    def generate(self, people_quantity):
+    def place_helipad_on_frame(self, frame, adj_matrix, height_map):
+        i = np.random.choice(self.num_cols)
+        x1 = self.col_size*i
+        x2 = self.col_size*(i+1)
+        j = np.random.choice(self.num_rows)
+        y1 = self.row_size*j
+        y2 = self.row_size*(j+1)
+        chosen_item_idx = np.random.choice(len(self.helipad_options_images))
+        height_map[i][j] = self.helipad_options_heights[chosen_item_idx]
+        adj_matrix[i][j] = self.helipad_options_labels[chosen_item_idx]
+        frame[x1:x2, y1:y2, :] = self.helipad_options_images[
+            chosen_item_idx
+        ]
+        return frame, adj_matrix, height_map, [i, j]
+
+    def generate(self, people_quantity, place_helipad=True):
         """Generates a random AerialImageData object using the given terrain and person options.
 
         Parameter
@@ -319,4 +361,11 @@ class RandomAerialImageDataGenerator(object):
                 height_map=data.height_map,
                 people_quantity=people_quantity
             )
+        if place_helipad:
+            data.frame, data.adj_matrix, data.height_map, data.helipad_coord =\
+                self.place_helipad_on_frame(
+                    frame=data.frame,
+                    adj_matrix=data.adj_matrix,
+                    height_map=data.height_map,
+                )
         return data
