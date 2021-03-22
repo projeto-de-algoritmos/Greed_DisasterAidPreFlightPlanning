@@ -10,7 +10,7 @@ class Params(object):
 #                 reload_time,
 #                 battery_switching_time,
 #                 total_number_of_batteries,
-                 num_mav,
+#                 num_mav,
                  num_people,
                  num_packets):
         self.speed = speed
@@ -20,7 +20,7 @@ class Params(object):
 #        self.reload_time = reload_time  # TODO
 #        self.battery_switching_time = battery_switching_time  # TODO
 #        self.total_number_of_batteries = total_number_of_batteries  # TODO
-        self.num_mav = num_mav
+#        self.num_mav = num_mav
         self.num_people = num_people
         self.num_packets = num_packets
 
@@ -34,11 +34,11 @@ def find_routes(person_coord_list,
         np.array(home_coord) - np.array(person_coord_list),
         axis=1
     )
-    uav_elapsed_times = np.zeros(params.num_mav)
-    # all MAVs start at the home coordinate
-    uav_routes = np.repeat([[home_coord]], params.num_mav, axis=0).tolist()
-    uav_idx = 0
-    next_coord, time_to_next, time_to_home = find_routes_re(
+    elapsed_time_list = [0]
+    # all routes start at the home coordinate
+    routes = [[home_coord]]
+    route_idx = 0
+    next_coord, time_to_next, time_to_home = find_routes_visit(
         curr_coord=home_coord,
         nb_coord_list=person_coord_list,
         distances_to_home=distances_to_home,
@@ -46,11 +46,9 @@ def find_routes(person_coord_list,
         params=params
     )
     loop_idx = -1
-    while True:
+    while len(person_coord_list) != 0:
         loop_idx += 1
-        if len(person_coord_list) == 0:
-            break
-        next_coord, time_to_next, time_to_home = find_routes_re(
+        next_coord, time_to_next, time_to_home = find_routes_visit(
             curr_coord=next_coord,
             nb_coord_list=person_coord_list,
             distances_to_home=distances_to_home,
@@ -59,33 +57,27 @@ def find_routes(person_coord_list,
         )
         if (((params.maximum_flight_time*60-time_to_home) > 0)
                 and ((params.maximum_flight_time*60-time_to_next) > 0)):
-            # Remember the home coord is in uav_routes when measuring its len.
-            if params.num_packets < len(uav_routes[uav_idx]):
-                uav_idx += 1
-                if uav_idx >= params.num_mav:
-                    break
-            uav_routes[uav_idx].append(next_coord)
-            uav_elapsed_times[uav_idx] += time_to_next
+            # Remember the home coord is in routes when measuring its len.
+            if params.num_packets < len(routes[route_idx]):
+                route_idx += 1
+                routes.append([home_coord])
+                elapsed_time_list.append(0)
+            routes[route_idx].append(next_coord)
+            elapsed_time_list[route_idx] += time_to_next
             idx = person_coord_list.index(next_coord)
             del person_coord_list[idx]
             distances_to_home = np.delete(distances_to_home, idx)
+    routes_clean = []
+    elapsed_time_list_clean = []
+    for i in range(len(routes)):
+        if len(routes[i]) <= 1:
             continue
-        else:
-            uav_idx += 1
-            if uav_idx > params.num_mav:
-                break
-            continue
-    uav_routes_clean = []
-    uav_elapsed_times_clean = []
-    for i in range(len(uav_routes)):
-        if len(uav_routes[i]) <= 1:
-            continue
-        uav_routes_clean.append(uav_routes[i] + [home_coord])
-        uav_elapsed_times_clean.append(uav_elapsed_times[i])
-    return uav_routes_clean, uav_elapsed_times_clean
+        routes_clean.append(routes[i] + [home_coord])
+        elapsed_time_list_clean.append(elapsed_time_list[i])
+    return routes_clean, elapsed_time_list_clean
 
 
-def find_routes_re(curr_coord, nb_coord_list,
+def find_routes_visit(curr_coord, nb_coord_list,
                    distances_to_home,
                    adj_matrix_shape, params):
     distances = np.linalg.norm(
