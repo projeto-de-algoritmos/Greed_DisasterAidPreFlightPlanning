@@ -7,9 +7,9 @@ class Params(object):
                  landing_time,
                  takeoff_time,
                  maximum_flight_time,
-                 reload_time,
-                 battery_switching_time,
-                 total_number_of_batteries,
+#                 reload_time,
+#                 battery_switching_time,
+#                 total_number_of_batteries,
                  num_mav,
                  num_people,
                  num_packets):
@@ -17,9 +17,9 @@ class Params(object):
         self.landing_time = landing_time
         self.takeoff_time = takeoff_time
         self.maximum_flight_time = maximum_flight_time
-        self.reload_time = reload_time  # TODO
-        self.battery_switching_time = battery_switching_time  # TODO
-        self.total_number_of_batteries = total_number_of_batteries  # TODO
+#        self.reload_time = reload_time  # TODO
+#        self.battery_switching_time = battery_switching_time  # TODO
+#        self.total_number_of_batteries = total_number_of_batteries  # TODO
         self.num_mav = num_mav
         self.num_people = num_people
         self.num_packets = num_packets
@@ -34,8 +34,6 @@ def find_routes(person_coord_list,
         np.array(home_coord) - np.array(person_coord_list),
         axis=1
     )
-    # while drone aguentar (num_packets, maximum_flight_time)
-    # qnd o drone num aguentar mais, vai pro outro q eh pra n decolar a toa
     uav_elapsed_times = np.zeros(params.num_mav)
     # all MAVs start at the home coordinate
     uav_routes = np.repeat([[home_coord]], params.num_mav, axis=0).tolist()
@@ -111,9 +109,7 @@ def find_routes_re(curr_coord, nb_coord_list,
     # bat_next = params.maximum_flight_time - elapsed_time
     # land again
     elapsed_time += params.landing_time
-    # battery remaining to go to the next coord, then to go back home
+    # time to go to the next coord, then to go back home
     time_to_home = elapsed_time
     # bat_home = params.maximum_flight_time - elapsed_time
-    # If the MAV has enough battery to come back, try to reach another node.
-    # Else, use the previously calculated path.
     return closest_coord, time_to_next, time_to_home
