@@ -64,7 +64,7 @@ def find_routes(person_coord_list,
             # Remember the home coord is in uav_routes when measuring its len.
             if params.num_packets < len(uav_routes[uav_idx]):
                 uav_idx += 1
-                if uav_idx > params.num_mav:
+                if uav_idx >= params.num_mav:
                     break
             uav_routes[uav_idx].append(next_coord)
             uav_elapsed_times[uav_idx] += time_to_next
@@ -77,12 +77,14 @@ def find_routes(person_coord_list,
             if uav_idx > params.num_mav:
                 break
             continue
-    uav_routes, uav_elapsed_times = list(zip(*[
-        (route, time) for (route, time)
-        in zip(uav_routes, uav_elapsed_times)
-        if len(route) > 1
-    ]))
-    return uav_routes, uav_elapsed_times
+    uav_routes_clean = []
+    uav_elapsed_times_clean = []
+    for i in range(len(uav_routes)):
+        if len(uav_routes[i]) <= 1:
+            continue
+        uav_routes_clean.append(uav_routes[i] + [home_coord])
+        uav_elapsed_times_clean.append(uav_elapsed_times[i])
+    return uav_routes_clean, uav_elapsed_times_clean
 
 
 def find_routes_re(curr_coord, nb_coord_list,
