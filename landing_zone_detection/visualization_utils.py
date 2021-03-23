@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -149,6 +150,9 @@ def plot_frame(frame, width=224, height=224, images_to_overlay=[]):
         frame = cv2.addWeighted(img_to_overlay, 1.0, frame, 1.0, 0.0)
     # resize to desired size with bilinear interpolation
     frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR)
+    dpi = matplotlib.rcParams['figure.dpi']
+    figsize = width / float(dpi), height / float(dpi)
+    plt.figure(figsize=figsize)
     # convert from BGR to RGB for plotting purposes
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     # plot the resulting frame

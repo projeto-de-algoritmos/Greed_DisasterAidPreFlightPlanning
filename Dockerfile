@@ -11,5 +11,6 @@ RUN pip install --default-timeout=15000 --requirement /tmp/requirements.txt && \
     fix-permissions /home/$NB_USER
 
 COPY landing_zone_detection landing_zone_detection
-COPY app.ipynb .
 COPY mock_data mock_data
+COPY preflight_planning preflight_planning
+COPY app.ipynb .
