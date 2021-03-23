@@ -19,7 +19,7 @@ We generated some mock test data from Pokemon Emerald. These are the rules for i
 * A human can walk on areas with tall grass and low grass, but not on areas with trees.
 
 #### Algorithms
-Those algorithms are part of a research in progress. Another part of this work is in the following repository: https://github.com/projeto-de-algoritmos/Grafos2_ClosestLandingZone
+These algorithms are part of a research in progress. Another part of this work is in the following repository: https://github.com/projeto-de-algoritmos/Grafos2_ClosestLandingZone
 
 * **1. Find closest landing zone**: Dijkstra-like algorithm with the human as its initial point. It finds the shortest path to all landing zones the human could reach and chooses only the closest one.
   * **Inputs**:
