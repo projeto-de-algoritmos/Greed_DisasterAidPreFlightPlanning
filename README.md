@@ -39,16 +39,9 @@ Those algorithms are part of a research in progress. Another part of this work i
 ![Screenshot 3](assets/screenshot3.png)
 
 ## Video (pt-br, [download link](https://raw.githubusercontent.com/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/main/assets/app_video.mp4))
-[![](assets/app_video_splash_screen.png)](https://youtu.be/TODO)
+[![](assets/app_video_splash.png)](https://youtu.be/TODO)
 
 ## How to run
 **Language**: Python.<br>
-**Frameworks**: OpenCV; Jupyter Voilà; BinderHub.<br>
-Access the [app](https://mybinder.org/v2/gh/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/main?urlpath=%2Fvoila%2Frender%2Fapp.ipynb) or the [notebook](https://mybinder.org/v2/gh/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/main?filepath=app.ipynb) with the BinderHub server.
-
-
-## References
-
-Jupyter et al., "Binder 2.0 - Reproducible, Interactive, Sharable
-Environments for Science at Scale." Proceedings of the 17th Python
-in Science Conference. 2018. doi://10.25080/Majora-4af1f417-011
+**Frameworks**: OpenCV; Jupyter.<br>
+Access the [notebook](http://colab.research.google.com/github/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/blob/main/app.ipynb) with Google Colab.
