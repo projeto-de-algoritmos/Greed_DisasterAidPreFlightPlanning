@@ -19,6 +19,8 @@ We generated some mock test data from Pokemon Emerald. These are the rules for i
 * A human can walk on areas with tall grass and low grass, but not on areas with trees.
 
 #### Algorithms
+Those algorithms are part of a research in progress. Another part of this work is in the following repository: https://github.com/projeto-de-algoritmos/Grafos2_ClosestLandingZone
+
 * **1. Find closest landing zone**: Dijkstra-like algorithm with the human as its initial point. It finds the shortest path to all landing zones the human could reach and chooses only the closest one.
   * **Inputs**:
     * **Adjacency matrix**: It's a matrix with the classification of each zone. The possible classifications are: 'MAV can land and human can reach', 'MAV cannot land and human can reach', 'MAV cannot land and human cannot reach'. A plain house roof would be classified as 'MAV can land and human can reach', that's where the height map comes in.
@@ -27,19 +29,8 @@ We generated some mock test data from Pokemon Emerald. These are the rules for i
   * **Outputs**:
     * The shortest path from the human to the closest landing zone and the path's total distance.
 
-* **2. Pre-Flight Planning**: Prim-like algorithm. For each MAV, it finds a path that doesn't exceed the MAV's maximum flight time and, at the same time, heads back to the home GPS location. Each path is a cut of the GPS coordinates minimum spanning tree.
-  * **Inputs**:
-    * **List of GPS coordinates**: We consider that, previously to the cargo MAVs, exploration MAVs were sent to locate the humans that could receive supplies. After exploring, those MAVs messaged the Ground Control Station a list of GPS coordinates corresponding to those humans locations. But there's an issue: the error of the GPS measurements. As this is a simulation, we decided that the human could be anywhere within a radius (radius value equals to GPS error) that the cargo MAV camera can capture, but that the cargo MAVs can reach precisely the same GPS coordinate that's in the "List of GPS coordinates".
-    * **Speed**:
-    * **Landing time**: Time each MAV takes to land vertically (we're not considering other kinds of landing).
-    * **Take-off time**: Time each MAV takes to takeoff vertically (we're not considering other kinds of takeoff).
-    * **Maximum flight time**: Maximum flight time of each MAV. We assume that there's only one type of MAV and that every battery lasts the same amount of time.
-    * **Battery switching time**: Time it takes to switch the battery of a MAV when it is turned off. We're not considering recharging the batteries yet.
-    * **Total number of batteries**: this is not the number of extra batteries. It is the total number of batteries.
-    * **Number of MAVs**.
-  * **Outputs**:
-    * The mission each MAV should execute: waypoints and actions that should be taken at each waypoint.
-<!--     * **Battery recharging  time**: Time it takes to recharge the battery of a MAV when it is turned off. -->
+* **2. Pre-Flight Planning**: The algorithm 1 finds routes that don't exceed the MAVs maximum flight time and, at the same time, heads back to the home location (the orange helipad). Then, the algorithm 2 schedules the take-off time of the MAVs. The focus of the algorithms is not to minimize the delivery time, but the battery consumption. We only implemented the algorithm 1, which resembles Prim, due to our time limits.
+
 
 
 ## App Gif
