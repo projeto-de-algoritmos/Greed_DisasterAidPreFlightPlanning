@@ -33,8 +33,10 @@ Those algorithms are part of a research in progress. Another part of this work i
 
 
 
-## App Gif
-![App Gif](assets/app_gif.gif)
+## App Screenshots
+![Screenshot 1](assets/screenshot1.png)
+![Screenshot 2](assets/screenshot2.png)
+![Screenshot 3](assets/screenshot3.png)
 
 ## Video (pt-br, [download link](https://raw.githubusercontent.com/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/main/assets/app_video.mp4))
 [![](assets/app_video_splash_screen.png)](https://youtu.be/TODO)
@@ -44,9 +46,6 @@ Those algorithms are part of a research in progress. Another part of this work i
 **Frameworks**: OpenCV; Jupyter Voilà; BinderHub.<br>
 Access the [app](https://mybinder.org/v2/gh/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/main?urlpath=%2Fvoila%2Frender%2Fapp.ipynb) or the [notebook](https://mybinder.org/v2/gh/projeto-de-algoritmos/Greed_DisasterAidPreFlightPlanning/main?filepath=app.ipynb) with the BinderHub server.
 
-## How to use
-
-The app generates a random image for each iteration. Everytime you click the update button, a new random image is generated and the pre-flight planning algorithm is executed.
 
 ## References
 
